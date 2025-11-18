@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## COMO INICIAR O PROJETO:
 
 1 - Entre na pasta do projeto 'TRABALHOCOMPUTABILIDADE'
@@ -51,6 +50,4 @@
     - Entrada: aabbaa
     * Resultado: REJEITA *
 
-=======
-# trabalhoComputabilidade
->>>>>>> parent of 6d723de (projeto)
+
