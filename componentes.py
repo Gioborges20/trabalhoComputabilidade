@@ -44,247 +44,201 @@ def tape_snapshot_view(entrada_original: str, pos: int, estado: str):
 
 def mainLayout(): 
     return Title("Simulador de Automatos com Pilha"), \
+Link(rel="preconnect", href="https://fonts.googleapis.com"), \
+        Link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin=""), \
+        Link(href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap", rel="stylesheet"), \
         Main(
             Style("""
-            body{padding-bottom:400px}
-            .error-message{color:#ff4444}
-            .error-message h3{color:#ff4444}
-            .error-message ul{color:#ff4444}
-            .error-message li{color:#ff4444}
-            .exec-grid{display:flex;gap:24px;align-items:flex-start;margin:12px 0}
-            .stack-wrapper{min-width:90px}
-            .stack-box{display:flex;flex-direction:column;gap:4px;border:2px solid #6b5b3e;
-                       padding:6px;background:#2a2f38;border-radius:6px}
-            .stack-cell{width:64px;height:32px;border:2px solid #6b5b3e;border-radius:4px;
-                        display:flex;align-items:center;justify-content:center;
-                        background:#3a3f48;color:#f4f4f4;font-size:14px;font-weight:700}
-            .history-wrapper ul{margin:8px 0 0 18px}
-            .controls{margin-top:12px}
-            .tape-wrapper{margin-top:8px}
-            .tape-snapshot{display:flex;align-items:flex-start;gap:8px;margin-bottom:2px}
-            .tape-row{display:flex;gap:4px}
-            .tape-cell{min-width:24px;height:26px;background:#3569b1;color:#fff;
-                       display:flex;align-items:center;justify-content:center;
-                       border-radius:2px;font-size:14px;padding:0 4px}
-            .tape-arrow-cell{min-width:24px;height:18px;display:flex;
-                             align-items:flex-start;justify-content:center;color:#fff}
-            .tape-estado{min-width:80px;font-weight:600;line-height:26px}
-            .sim-mode{margin:8px 0 20px 0}
-            .sim-mode label{margin:0 4px 0 8px;cursor:pointer}
-            .sim-mode input[type="radio"]{cursor:pointer}
-            .controls{display:flex;gap:8px;margin-top:12px}
-            """),
-            Script("""
-                window.autoSimInterval = null;
-                function verificarEExecutarAuto() {
-                    const container = document.getElementById('simulacao-container');
-                    if (!container) return;
-                    
-                    const isFinalizada = container.innerHTML.includes('Execução finalizada');
-                    if (isFinalizada) {
-                        if (window.autoSimInterval) {
-                            clearInterval(window.autoSimInterval);
-                            window.autoSimInterval = null;
-                        }
-                        return;
-                    }
-                    
-                    const form = container.querySelector('form');
-                    if (!form) return;
-                    
-                    const modoInput = form.querySelector('input[name="modo_simulacao"]');
-                    if (!modoInput || modoInput.value !== 'automatico') {
-                        if (window.autoSimInterval) {
-                            clearInterval(window.autoSimInterval);
-                            window.autoSimInterval = null;
-                        }
-                        return;
-                    }
-                    
-                    if (window.autoSimInterval) return;
-                    
-                    let primeiroPasso = true;
-                    window.autoSimInterval = setInterval(function() {
-                        if (primeiroPasso) {
-                            primeiroPasso = false;
-                            return;
-                        }
-                        const containerEl = document.getElementById('simulacao-container');
-                        if (!containerEl) {
-                            clearInterval(window.autoSimInterval);
-                            window.autoSimInterval = null;
-                            return;
-                        }
-                        
-                        const isFinalizada = containerEl.innerHTML.includes('Execução finalizada');
-                        if (isFinalizada) {
-                            clearInterval(window.autoSimInterval);
-                            window.autoSimInterval = null;
-                            return;
-                        }
-                        
-                        const formEl = containerEl.querySelector('form');
-                        if (!formEl) {
-                            const isFinalizada = containerEl.innerHTML.includes('Execução finalizada');
-                            if (isFinalizada) {
-                                clearInterval(window.autoSimInterval);
-                                window.autoSimInterval = null;
-                            }
-                            return;
-                        }
-                        
-                        const estado = formEl.querySelector('input[name="exec_estado"]')?.value;
-                        const pilha = formEl.querySelector('input[name="exec_pilha"]')?.value;
-                        const entrada = formEl.querySelector('input[name="exec_entrada"]')?.value;
-                        const definicao = formEl.querySelector('input[name="exec_definicao"]')?.value;
-                        const history = formEl.querySelector('input[name="exec_history"]')?.value;
-                        
-                        if (!estado || pilha === undefined || entrada === undefined || !definicao) {
-                            const isFinalizada = containerEl.innerHTML.includes('Execução finalizada');
-                            if (isFinalizada) {
-                                clearInterval(window.autoSimInterval);
-                                window.autoSimInterval = null;
-                            }
-                            return;
-                        }
-                        
-                        const formData = new FormData();
-                        formData.append('exec_estado', estado);
-                        formData.append('exec_pilha', pilha);
-                        formData.append('exec_entrada', entrada);
-                        formData.append('exec_definicao', definicao);
-                        formData.append('exec_history', history || '[]');
-                        formData.append('modo_simulacao', 'automatico');
-                        
-                        fetch('/proximo-passo', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(r => r.text())
-                        .then(html => {
-                            const containerEl = document.getElementById('simulacao-container');
-                            if (!containerEl) return;
-                            
-                            containerEl.innerHTML = html;
-                            
-                            const scripts = containerEl.querySelectorAll('script');
-                            scripts.forEach(oldScript => {
-                                const newScript = document.createElement('script');
-                                if (oldScript.src) {
-                                    newScript.src = oldScript.src;
-                                } else {
-                                    newScript.textContent = oldScript.textContent;
-                                }
-                                oldScript.parentNode.replaceChild(newScript, oldScript);
-                            });
-                            
-                            const isFinalizada = containerEl.innerHTML.includes('Execução finalizada');
-                            if (isFinalizada && window.autoSimInterval) {
-                                clearInterval(window.autoSimInterval);
-                                window.autoSimInterval = null;
-                            }
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            clearInterval(window.autoSimInterval);
-                            window.autoSimInterval = null;
-                        });
-                    }, 500);
-                }
-                
-                let iniciouAuto = false;
-                function iniciarVerificacaoAuto() {
-                    if (iniciouAuto) return;
-                    iniciouAuto = true;
-                    setTimeout(function() {
-                        setInterval(verificarEExecutarAuto, 100);
-                        verificarEExecutarAuto();
-                    }, 2000);
-                }
-                
-                setInterval(function() {
-                    const container = document.getElementById('simulacao-container');
-                    if (container && container.querySelector('form input[name="modo_simulacao"][value="automatico"]')) {
-                        if (!iniciouAuto && !window.autoSimInterval) {
-                            iniciarVerificacaoAuto();
-                        }
-                    }
-                }, 100);
-                
-                document.addEventListener('htmx:afterSwap', function(evt) {
-                    if (evt.detail.target.id === 'simulacao-container') {
-                        iniciouAuto = false;
-                        if (window.autoSimInterval) {
-                            clearInterval(window.autoSimInterval);
-                            window.autoSimInterval = null;
-                        }
-                        setTimeout(function() {
-                            iniciarVerificacaoAuto();
-                        }, 2000);
-                    }
-                });
-            """),
-            H1("Simulador de Pilha em tempo real"),
-            P("Trabalho da disciplina de Computabilidade"),
+    body {
+        padding-bottom: 400px; 
+        font-family: 'Nunito', sans-serif; 
+        background-color: #ffff; 
+        color: #414141; 
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Nunito', sans-serif;
+        color: #414141; 
+    }
+
+    /* Inputs e Textareas */
+    input, textarea {
+        background-color: #ffffff !important;
+        color: #414141 !important;
+        border: 1px solid #AEAEAE;
+        font-family: 'Nunito', sans-serif; /* Garante fonte nos inputs */
+    }
+    
+    /* Botões */
+    button { 
+        cursor: pointer; 
+        background: #5C5C5C; 
+        color: white; 
+        border: none; 
+        padding: 10px 20px; 
+        border-radius: 2px; 
+        font-weight: bold; 
+        font-family: 'Nunito', sans-serif; /* Garante fonte no botão */
+    }
+    button:hover { background: #5C5C5C; }
+
+    /* Layout Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+        align-items: start;
+    }
+    
+    @media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; }
+    }
+
+    .left-col {
+        background: #E6E6E6;
+        padding: 20px;
+        border-radius: 6px;
+        border: 1px solid #AEAEAE;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .right-col {
+        background: #E6E6E6;
+        padding: 20px;
+        border-radius: 6px;
+        border: 1px solid #AEAEAE;
+        height: 100%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .simulacao-box {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #E6E6E6;
+        padding: 20px;
+        border: 1px solid #AEAEAE;
+        border-radius: 6px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Estilos de Erro e Simulação */
+    .error-message{color:#d32f2f}
+    .error-message h3{color:#d32f2f}
+    .error-message ul{color:#d32f2f}
+    
+    .exec-grid{display:flex;gap:24px;align-items:flex-start;margin:12px 0}
+    
+    .stack-wrapper{min-width:90px}
+    .stack-box{display:flex;flex-direction:column;gap:4px;border:2px solid #6b5b3e;
+               padding:6px;background:#fff8e1; border-radius:6px}
+    .stack-cell{width:64px;height:32px;border:2px solid #6b5b3e;border-radius:4px;
+                display:flex;align-items:center;justify-content:center;
+                background:#ffecb3;color:#4e342e;font-size:14px;font-weight:700;
+                font-family: 'Nunito', sans-serif;}
+
+    .history-wrapper ul{margin:8px 0 0 18px}
+    .controls{margin-top:12px}
+    .tape-wrapper{margin-top:8px}
+    .tape-snapshot{display:flex;align-items:flex-start;gap:8px;margin-bottom:2px}
+    .tape-row{display:flex;gap:4px}
+    
+    .tape-cell{min-width:24px;height:26px;background:#5C5C5C;color:#fff;
+               display:flex;align-items:center;justify-content:center;
+               border-radius:2px;font-size:14px;padding:0 4px;
+               font-family: monospace;} /* Fita geralmente fica melhor com monospace, mas pode mudar para Nunito se quiser */
+               
+    .tape-arrow-cell{min-width:24px;height:18px;display:flex;
+                     align-items:flex-start;justify-content:center;color:#414141}
+    .tape-estado{min-width:80px;font-weight:600;line-height:26px; color: #414141;}
+    
+    .sim-mode{margin:8px 0 20px 0}
+    .sim-mode label{margin:0 4px 0 8px;cursor:pointer; color: #414141;}
+    .sim-mode input[type="radio"]{cursor:pointer}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    
+    textarea { 
+        width: 100%; box-sizing: border-box; resize: vertical; 
+        background: #fff; color: #414141; border: 1px solid #ccc; padding: 8px;
+    }
+    input[type="text"] { 
+        width: 100%; box-sizing: border-box; margin-bottom: 10px; 
+        background: #fff; color: #414141; border: 1px solid #ccc; padding: 8px;
+    }
+    label { color: #414141; font-weight: 500; }
+"""),
+            H1("Simulador de Pilha em tempo real", Style="text-align: center; color: #414141;"),
+            P("Trabalho da disciplina de Computabilidade", Style="text-align: center; color: #666; margin-bottom: 30px;"),
+            
         Form(
-            H2("Definição do Autômato"),
             Div(
-                Label("Estados (Q) (Separados por vírgula): "),
-                Input(name = "EstadosPilha", value = "q0,q1,q3"),
-            ),
-            Div(
-                Label("Alfabeto de Entrada (Σ):"),
-                Input(name = "AlfabetoEntrada", value = "a,b"),
-            ),
-            Div(
-                Label("Alfabeto Pilha: "),
-                Input(name = "alfabetoPilha", value = "A, Z"),
-            ),
-            Div(
-                Label("Estado inicial: "),
-                Input(name = "estadoInicial", value = "q0"),
-            ),
-            Div(
-                Label("Estado(s) final(is): "),
-                Input(name = "estadosFinais", value = "q2"),
-            ),
-            H2("Transições"),
-            P("Observação: 'eps' representa o símbolo vazio (ε)."),
-            P("Formato exemplo: q0,a,Z;q0,A / q0,b,A;q1,eps"),
-            P("q0,a,Z;q0,A -> * q0: Estado atual;"),
-            P("q0,a,Z;q0,A -> * 'a': Ler na fita;"),
-            P("q0,a,Z;q0,A -> * 'Z': Ler na pilha;"),
-            P("q0,a,Z;q0,A -> * q0: Estado destino;"),
-            P("q0,a,Z;q0,A -> * 'A': Empilhar na pilha;"),
-            Textarea(
-                name = "transicoes_raw",
-                rows = 3,
-                cols = 70,
-                value = "q0,a,Z;q0,A / q0,a,A;q0,A / q0,b,A;q1,eps / q1,b,A;q1,eps / q1,eps,Z;q2,eps"
+                Div(
+                    H2("Definição do Autômato"),
+                    Div(
+                        Label("Estados (Q) (Separados por vírgula): "),
+                        Input(name = "EstadosPilha", value = "q0,q1,q3"),
+                    ),
+                    Div(
+                        Label("Alfabeto de Entrada (Σ):"),
+                        Input(name = "AlfabetoEntrada", value = "a,b"),
+                    ),
+                    Div(
+                        Label("Alfabeto Pilha: "),
+                        Input(name = "alfabetoPilha", value = "A, Z"),
+                    ),
+                    Div(
+                        Label("Estado inicial: "),
+                        Input(name = "estadoInicial", value = "q0"),
+                    ),
+                    Div(
+                        Label("Estado(s) final(is): "),
+                        Input(name = "estadosFinais", value = "q2"),
+                    ),
+                    Cls="left-col"
+                ),
+                
+                Div(
+                    H2("Transições"),
+                    P("Observação: 'eps' representa o símbolo vazio (ε).", Style="font-size: 0.9em; color: #555;"),
+                    P("Formato: q0,a,Z;q0,A", Style="font-size: 0.9em; color: #555;"),
+                    Textarea(
+                        name = "transicoes_raw",
+                        rows = 12,
+                        value = "q0,a,Z;q0,A / q0,a,A;q0,A / q0,b,A;q1,eps / q1,b,A;q1,eps / q1,eps,Z;q2,eps"
+                    ),
+                    Cls="right-col"
+                ),
+                Cls="form-grid"
             ),
 
-            H2("simulação"),
             Div(
-                Label("Entrada: "),
-                Input(name = "sentenca", value = "aabb"),
+                H2("Simulação"),
+                Div(
+                    Label("Entrada: "),
+                    Input(name = "sentenca", value = "aabb"),
+                ),
+                Div(
+                    Label("Modo: "),
+                    Input(type="radio", name="modo_simulacao", value="passo", id="modo-passo", checked=True),
+                    Label("Passo a passo", For="modo-passo"),
+                    Input(type="radio", name="modo_simulacao", value="automatico", id="modo-automatico"),
+                    Label("Simulação automática", For="modo-automatico"),
+                    Cls="sim-mode"
+                ),
+                Button("Iniciar Simulação", value = "submit", Style="width: 100%"),
+                Cls="simulacao-box"
             ),
-            Div(
-                Label("Modo: "),
-                Input(type="radio", name="modo_simulacao", value="passo", id="modo-passo", checked=True),
-                Label("Passo a passo", For="modo-passo"),
-                Input(type="radio", name="modo_simulacao", value="automatico", id="modo-automatico"),
-                Label("Simulação automática", For="modo-automatico"),
-                Cls="sim-mode"
-            ),
-            Button("Iniciar Simulação", value = "submit"),
 
             hx_post = "/inicia-simulacao",
             hx_target = "#simulacao-container",
             hx_swap = "innerHTML"
         ),
+        
         Div(
             id = "simulacao-container",
-            Cls = "container"),
+            Cls = "container",
+            Style = "margin-top: 40px;"
+        ),
 
         Cls = "container"
         )
