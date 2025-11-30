@@ -130,11 +130,11 @@ Link(rel="preconnect", href="https://fonts.googleapis.com"), \
     .exec-grid{display:flex;gap:24px;align-items:flex-start;margin:12px 0}
     
     .stack-wrapper{min-width:90px}
-    .stack-box{display:flex;flex-direction:column;gap:4px;border:2px solid #6b5b3e;
-               padding:6px;background:#fff8e1; border-radius:6px}
-    .stack-cell{width:64px;height:32px;border:2px solid #6b5b3e;border-radius:4px;
+    .stack-box{display:flex;flex-direction:column;gap:4px;border:1px solid #5C5C5C;
+               padding:6px;background:#E6E6E6; border-radius:6px}
+    .stack-cell{width:64px;height:32px;border:1px solid #5C5C5C;border-radius:4px;
                 display:flex;align-items:center;justify-content:center;
-                background:#ffecb3;color:#4e342e;font-size:14px;font-weight:700;
+                background:#ccc;color:#5C5C5C;font-size:14px;font-weight:700;
                 font-family: 'Nunito', sans-serif;}
 
     .history-wrapper ul{margin:8px 0 0 18px}
@@ -143,7 +143,7 @@ Link(rel="preconnect", href="https://fonts.googleapis.com"), \
     .tape-snapshot{display:flex;align-items:flex-start;gap:8px;margin-bottom:2px}
     .tape-row{display:flex;gap:4px}
     
-    .tape-cell{min-width:24px;height:26px;background:#5C5C5C;color:#fff;
+    .tape-cell{min-width:24px;height:26px;background:#5C5C5C;color:#ccc;
                display:flex;align-items:center;justify-content:center;
                border-radius:2px;font-size:14px;padding:0 4px;
                font-family: monospace;} /* Fita geralmente fica melhor com monospace, mas pode mudar para Nunito se quiser */
@@ -159,11 +159,11 @@ Link(rel="preconnect", href="https://fonts.googleapis.com"), \
     
     textarea { 
         width: 100%; box-sizing: border-box; resize: vertical; 
-        background: #fff; color: #414141; border: 1px solid #ccc; padding: 8px;
+        background: #ccc; color: #414141; border: 1px solid #ccc; padding: 8px;
     }
     input[type="text"] { 
         width: 100%; box-sizing: border-box; margin-bottom: 10px; 
-        background: #fff; color: #414141; border: 1px solid #ccc; padding: 8px;
+        background: #ccc; color: #414141; border: 1px solid #ccc; padding: 8px;
     }
     label { color: #414141; font-weight: 500; }
 """),
