@@ -32,12 +32,12 @@ def mainLayout():
         Main(
             # Estilização da interface
             Style("""
-            body { padding-bottom: 400px; font-family: 'Nunito', sans-serif; background-color: #ffff; color: #414141; }
-            h1, h2, h3, h4, h5, h6 { font-family: 'Nunito', sans-serif; color: #414141; }
+            body { padding-bottom: 400px; font-family: 'Nunito', sans-serif; background-color: #ffff; color: #000000; }
+            h1, h2, h3, h4, h5, h6 { font-family: 'Nunito', sans-serif; color: #000000; }
 
-            input, textarea { background-color: #ffffff !important; color: #414141 !important; border: 1px solid #AEAEAE; font-family: 'Nunito', sans-serif; }
-            button { cursor: pointer; background: #5C5C5C; color: white; border: none; padding: 10px 20px; border-radius: 2px; font-weight: bold; font-family: 'Nunito', sans-serif; }
-            button:hover { background: #5C5C5C; }
+            input, textarea { background-color: #ffffff !important; color: #000000 !important; border: 1px solid #AEAEAE; font-family: 'Nunito', sans-serif; }
+            button { cursor: pointer; background: #517C91; color: white; border: none; padding: 10px 20px; border-radius: 2px; font-weight: bold; font-family: 'Nunito', sans-serif; }
+            button:hover { background: #799DAF; }
 
             .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; align-items: start; }
             
@@ -53,24 +53,21 @@ def mainLayout():
                 .bottom-layout { grid-template-columns: 1fr; }
             }
 
-            .left-col, .right-col { background: #E6E6E6; padding: 20px; border-radius: 6px; border: 1px solid #AEAEAE; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+            .left-col, .right-col { background: #A0C1D1; padding: 20px; border-radius: 6px; border: 1px solid #96B3C1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
             .right-col { height: 100%; }
 
             .simulacao-box {
-                background: #E6E6E6;
+                background: #A0C1D1;
                 padding: 20px;
                 border: 1px solid #AEAEAE;
                 border-radius: 6px;
                 box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             }
 
-            /* --- ALTERAÇÃO AQUI: Removemos a borda e altura fixa --- */
             .results-box {
                 background: #fff;
-                /* border: 1px dashed #ccc;  <-- REMOVIDO */
                 padding: 20px;
                 border-radius: 6px;
-                /* min-height removido para não ocupar espaço vazio */
             }
 
             .error-message{color:#d32f2f} .error-message h3{color:#d32f2f} .error-message ul{color:#d32f2f}
@@ -87,7 +84,7 @@ def mainLayout():
             .tape-snapshot{display:flex;align-items:flex-start;gap:8px;margin-bottom:2px}
             .tape-row{display:flex;gap:4px}
             .tape-cell{min-width:24px;height:26px;background:#5C5C5C;color:#ccc; display:flex;align-items:center;justify-content:center; border-radius:2px;font-size:14px;padding:0 4px; font-family: monospace;}
-            .tape-arrow-cell{min-width:24px;height:18px;display:flex; align-items:flex-start;justify-content:center;color:#414141}
+            .tape-arrow-cell{min-width:24px;height:18px;display:flex; align-items:flex-start;justify-content:center;color:#000000}
             .tape-estado{min-width:80px;font-weight:600;line-height:26px; color: #414141;}
             
             .sim-mode{margin:8px 0 20px 0}
@@ -96,12 +93,12 @@ def mainLayout():
             .controls{display:flex;gap:8px;margin-top:12px}
             
             textarea { width: 100%; box-sizing: border-box; resize: vertical; background: #ccc; color: #414141; border: 1px solid #ccc; padding: 8px; }
-            input[type="text"] { width: 100%; box-sizing: border-box; margin-bottom: 10px; background: #ccc; color: #414141; border: 1px solid #ccc; padding: 8px; }
+            input[type="text"] { width: 100%; box-sizing: border-box; margin-bottom: 10px; background: #ccc; color: #000010; border: 1px solid #ccc; padding: 8px; }
             label { color: #414141; font-weight: 500; }
             """),
             # Conteúdo da página
-            H1("Simulador de Pilha em tempo real", Style="text-align: center; color: #414141;"),
-            P("Trabalho da disciplina de Computabilidade", Style="text-align: center; color: #666; margin-bottom: 30px;"),
+            H1("Simulador de Pilha em tempo real", Style="text-align: center; color: #000000;"),
+            P("Trabalho da disciplina de Computabilidade", Style="text-align: center; color: #444444; margin-bottom: 30px;"),
             
             Form(
                 Div(
