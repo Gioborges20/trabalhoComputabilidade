@@ -49,5 +49,3 @@
     - Transições: q0,a,eps;q0,A / q0,b,eps;q1,eps / q1,a,A;q1,eps / q1,?,?;qf,eps
     - Entrada: aabbaa
     * Resultado: REJEITA *
-
-
