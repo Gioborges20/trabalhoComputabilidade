@@ -27,7 +27,7 @@
     - Estado inicial: q0
     - Estados finais: qf
     - Transições: q0,a,eps;q0,B / q0,b,B;q1,eps / q1,b,B;q1,eps / q1,?,?;qf,eps / q0,?,?;qf,eps
-    - Entrada: aaab
+    - Entrada: aaabbbb
     * Resultado: REJEITA *
 
 3 (reconhece palavras a^n b a^n):
